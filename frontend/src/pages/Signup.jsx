@@ -3,8 +3,9 @@ import React from "react";
 import { useState } from "react";
 import { useFirebase } from "../context/Firebase";
 import { useUser } from "../context/UserContext";
-
+import { useNavigate } from "react-router-dom";
 const Signup = () => {
+  const navigate = useNavigate()
   const firebase = useFirebase();
   const { user,signoutUser } = useUser();
 
@@ -12,13 +13,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
 
   if (user) {
-    return (
-    <div>
-        <h2>hello {user.email}</h2>
-        <button onClick={() => signoutUser()}>signout</button>
-
-    </div>
-    )
+   navigate('/')
   }
 
   const handleSignup = async () => {

@@ -1,40 +1,56 @@
-// import React from 'react'
-// import {getAuth, signInWithEmailAndPassword} from "firebase/auth"
-// import { app } from '../Firebase'
+import React, { useState } from 'react'
+import { useFirebase } from '../context/Firebase'
+import { useUser } from '../context/UserContext'
+import { Navigate } from 'react-router-dom'
 
-// const auth = getAuth(app)
+const Signin = () => {
+  const firebase = useFirebase()
+  const { user } = useUser()
 
-// const Signin = () => {
-//     const [email, setemail] = useState()
-//     const [password, setpassword] = useState()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-//     const signinUser = ()=>{
-//         signInWithEmailAndPassword(auth, email, password)
-//         .then((value)=>{console.log("signin success")})
-//         .catch((err)=>{console.log(err)})
-//     }
-//   return (
-//     <div>
-//         <label htmlFor="email">enter email</label>
-//       <input
-//       id="email"
-//         type="email"
-//         placeholder="enter email"
-//         value={email}
-//         onChange={(e) => setemail(e.target.value)}
-//       />
-//     <label htmlFor="password">enter email</label>
+  // ✅ SAFE redirect
+  if (user) {
+    return <Navigate to="/" replace />
+  }
 
-//       <input
-//       id="password"
-//         type="password"
-//         placeholder="enter password"
-//         value={password}
-//         onChange={(e) => setpassword(e.target.value)}
-//       />
-//       <button onClick={signinUser}>signin</button>
-//     </div>
-//   )
-// }
+  const handleSignIn = async () => {
+    if (!email || !password) {
+      alert("Email and password required")
+      return
+    }
 
-// export default Signin
+    try {
+      await firebase.signinUser(email, password)
+      // no navigate here — user state change will auto redirect
+    } catch (err) {
+      console.error(err)
+      alert(err.message)
+    }
+  }
+
+  return (
+    <div>
+      <label htmlFor="email">Enter email</label>
+      <input
+        id="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <label htmlFor="password">Enter password</label>
+      <input
+        id="password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <button onClick={handleSignIn}>Sign in</button>
+    </div>
+  )
+}
+
+export default Signin
