@@ -1,11 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 const UserHomepage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const navigate = useNavigate();
+  const { user } = useUser();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-export default UserHomepage
+  useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+    }
+  }, []);
+
+  return(
+    <>
+    </>
+  );
+};
+
+export default UserHomepage;

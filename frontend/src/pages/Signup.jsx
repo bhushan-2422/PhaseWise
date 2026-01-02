@@ -13,7 +13,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
 
   if (user) {
-   navigate('/')
+   navigate('/user')
   }
 
   const handleSignup = async () => {

@@ -12,7 +12,7 @@ const Signin = () => {
 
   // ✅ SAFE redirect
   if (user) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/user" replace />
   }
 
   const handleSignIn = async () => {
