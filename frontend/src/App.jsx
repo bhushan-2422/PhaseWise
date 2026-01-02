@@ -1,30 +1,41 @@
-import { Routes, Route } from "react-router-dom";
-import Signup from "./pages/Signup";
-import Signin from "./pages/Signin";
-import Home from "./pages/Home";
-import UserHomepage from "./pages/UserHomepage";
-import ProtectedRoute from "./ProtectedRoute";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Home from "./pages/Home";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import Signin from "./pages/Signin";
+import Signup from "./pages/Signup";
+import AuthRoute from "./routes/AuthRoute";
+import UserHomepage from "./pages/user/UserHomepage";
+import CreateProject from "./pages/user/CreateProject";
 function App() {
   return (
-    <Routes>
-      {/* Public */}
-      <Route path="/signin" element={<Signin />} />
-      <Route path="/signup" element={<Signup />} />
+    <BrowserRouter>
+      <Routes>
+        {/* Public */}
+        <Route path="/" element={<Home />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
 
-      {/* Public landing */}
-      <Route path="/" element={<Home />} />
+        {/* Protected */}
+        <Route
+          path="/userhome"
+          element={
+            <ProtectedRoute>
+              <UserHomepage/>
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Protected */}
-      <Route
-        path="/user"
-        element={
-          <ProtectedRoute>
-            <UserHomepage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        <Route
+          path="/create"
+          element={
+            <ProtectedRoute>
+              <CreateProject/>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

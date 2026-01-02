@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
-
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 const Home = () => {
-    const navigate = useNavigate()
-    
+  const {user, signoutUser} = useUser()
+
   return (
     <>
       <meta charSet="UTF-8" />
@@ -47,12 +47,26 @@ const Home = () => {
             <a href="#testimonials" className="nav-link">
               Testimonials
             </a>
-            <button className="btn btn-outline" id="loginBtn" onClick={()=> navigate("/signin")}>
-              Login
-            </button>
-            <button className="btn btn-primary" id="signupBtn" onClick={()=> navigate("/signup")}>
-              Sign Up
-            </button>
+
+            {!user && (
+              <>
+                <Link to="/signin" className="btn btn-outline" id="loginBtn">
+                  Login
+                </Link>
+                <br />
+                <Link to="/signup" className="btn btn-primary" id="signupBtn">
+                  Signup
+                </Link>
+              </>
+            )}
+
+            {user && (
+              <>
+                <Link to="/userhome">Go to Dashboard</Link>
+                <br />
+                <button onClick={signoutUser}>Logout</button>
+              </>
+            )}
           </div>
           <button className="mobile-menu-btn">
             <i className="fas fa-bars" />
@@ -351,6 +365,6 @@ const Home = () => {
       </footer>
     </>
   );
-}
+};
 
-export default Home
+export default Home;
