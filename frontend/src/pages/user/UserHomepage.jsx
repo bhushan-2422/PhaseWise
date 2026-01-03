@@ -1,29 +1,56 @@
-import React, { useEffect, useState } from 'react'
-import { useUser } from '../../context/UserContext'
-import { useFirebase } from '../../context/Firebase'
+import React, { useEffect, useState } from "react";
+import { useUser } from "../../context/UserContext";
+import { useFirebase } from "../../context/Firebase";
+import { useNavigate } from "react-router-dom";
 
 const UserHomepage = () => {
-  const {user} = useUser()
-  const firebase = useFirebase()
-  const [data, setdata] = useState()
+  const { user } = useUser();
+  const firebase = useFirebase();
+  const navigate = useNavigate();
+
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProjects(user){
-      const res = await firebase.handleViewAllProjects(user)
-      setdata(res)
-    }
+    if (!user) return;
 
-    fetchProjects(user)
-  }, [user])
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        const res = await firebase.handleViewAllProjects(user);
+        setProjects(res); // res is already an array
+      } catch (err) {
+        console.error("Failed to fetch projects", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  console.log(data)
-  
+    fetchProjects();
+  }, [user, firebase]);
+
+  if (!user) return <p>Not logged in</p>;
+  if (loading) return <p>Loading projects...</p>;
+
   return (
     <div>
-      hey baby..
-      
-    </div>
-  )
-}
+      <h2>Your Projects</h2>
 
-export default UserHomepage
+      {projects.length === 0 && <p>No projects yet.</p>}
+
+      <ul>
+        {projects.map((project) => (
+          <li
+            key={project.id}
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate(`/projects/${project.id}`)}
+          >
+            {project.projectName}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default UserHomepage;

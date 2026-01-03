@@ -17,6 +17,8 @@ import {
   getFirestore,
   getDocs,
   deleteDoc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 
 const firebaseAuth = getAuth(app);
