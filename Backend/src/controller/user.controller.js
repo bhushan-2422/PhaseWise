@@ -6,7 +6,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 const geminiModel = asyncHandler(async (req, res) => {
-  console.log(req);
   const { name, type, level, deadline, techstack, description } = req.body;
   if (!name) {
     throw new ApiError(401, "name is undefined");

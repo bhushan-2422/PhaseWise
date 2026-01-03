@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import AuthRoute from "./routes/AuthRoute";
 import UserHomepage from "./pages/user/UserHomepage";
 import CreateProject from "./pages/user/CreateProject";
+import ProjectDashboard from "./pages/user/ProjectDashboard";
 function App() {
   return (
     <BrowserRouter>
@@ -31,6 +32,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateProject/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:projectId"
+          element={
+            <ProtectedRoute>
+              <ProjectDashboard/>
             </ProtectedRoute>
           }
         />
