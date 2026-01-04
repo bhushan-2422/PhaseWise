@@ -10,7 +10,6 @@ const ProjectDashboard = () => {
   const firebase = useFirebase();
   const { projectId } = useParams();
 
-  const [loading, setLoading] = useState(false);
   const [project, setProject] = useState(null);
   const [phases, setPhases] = useState([]);
   const [activePhaseId, setActivePhaseId] = useState(null);
@@ -18,48 +17,57 @@ const ProjectDashboard = () => {
   useEffect(() => {
     if (!user || !projectId) return;
 
-    const fetchProject = async () => {
-      try {
-        setLoading(true);
-
-        const res = await firebase.handleViewOneProject(user, projectId);
-        setProject(res);
-
-        const phaseList = await firebase.handleViewPhases(user, projectId);
-        setPhases(phaseList);
-      } catch (e) {
-        console.error("error:", e);
-      } finally {
-        setLoading(false);
-      }
+    const loadData = async () => {
+      const proj = await firebase.handleViewOneProject(user, projectId);
+      const phaseList = await firebase.handleViewPhases(user, projectId);
+      setProject(proj);
+      setPhases(phaseList);
+      if (phaseList.length) setActivePhaseId(phaseList[0].id);
     };
 
-    fetchProject();
+    loadData();
   }, [user, projectId]);
 
-  if (loading) return <div>loading project...</div>;
-  if (!project) return <div>project not found</div>;
+  if (!project) return <div className="text-white p-6">Loading…</div>;
 
   return (
-    <div>
+    <div className="flex h-screen bg-purple-950 text-purple-100">
       <Sidebar />
-      <h1>{project.projectName}</h1>
 
-      {phases.map((phase) => (
-        <div key={phase.id}>
-          <h2>
-            {phase.order} - {phase.phaseName}
-          </h2>
-          <div>{phase.phaseGoal}</div>
-          <button onClick={() => setActivePhaseId(phase.id)}>
-            View Tasks
-          </button>
+      <main className="flex-1 p-6 overflow-y-auto">
+        <h1 className="text-3xl font-bold mb-6">
+          {project.projectName}
+        </h1>
+
+        {/* PHASE CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {phases.map((phase) => (
+            <div
+              key={phase.id}
+              onClick={() => setActivePhaseId(phase.id)}
+              className={`cursor-pointer rounded-xl p-4 border transition
+                ${
+                  activePhaseId === phase.id
+                    ? "bg-purple-800 border-purple-500"
+                    : "bg-purple-900 border-purple-800 hover:bg-purple-800"
+                }`}
+            >
+              <div className="text-sm text-purple-300">
+                Phase {phase.order}
+              </div>
+              <div className="text-lg font-semibold mt-1">
+                {phase.phaseName}
+              </div>
+              
+            </div>
+          ))}
         </div>
-      ))}
 
-      {activePhaseId && (
-        <TaskArea phaseId={activePhaseId} projectId={projectId} />
-      )}
+        {/* TASK AREA */}
+        {activePhaseId && (
+          <TaskArea projectId={projectId} phaseId={activePhaseId} />
+        )}
+      </main>
     </div>
   );
 };

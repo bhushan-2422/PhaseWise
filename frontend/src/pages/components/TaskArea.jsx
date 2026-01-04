@@ -1,42 +1,140 @@
-import React, { useEffect, useState } from 'react'
-import { useUser } from '../../context/UserContext'
-import { useFirebase } from '../../context/Firebase'
+import React, { useEffect, useState } from "react";
+import { useUser } from "../../context/UserContext";
+import { useFirebase } from "../../context/Firebase";
+import AddNewTask from "./AddNewTask";
 
-const TaskArea = ({phaseId, projectId}) => {
-  const {user} = useUser()
-  const firebase = useFirebase()
-  const [tasks, setTasks] = useState([])
-  const [loading, setLoading] = useState()
+const TaskArea = ({ projectId, phaseId }) => {
+  const { user } = useUser();
+  const firebase = useFirebase();
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newTask, setNewTask] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
 
   useEffect(() => {
-    const fetchTask = async() =>{
-      try{
-        setLoading(true)
-        const res = await firebase.handleViewTask(user, projectId, phaseId)
-        setTasks(res)
+    if (!user || !projectId || !phaseId) return;
 
-      }catch(e){
-        console.log(e)
-      }finally{
-        setLoading(false)
-      }
+    const fetchTasks = async () => {
+      setLoading(true);
+      setTasks([]);
+      const res = await firebase.handleViewTask(user, projectId, phaseId);
+      setTasks(res);
+      setLoading(false);
+    };
+
+    fetchTasks();
+  }, [user, projectId, phaseId]);
+
+  if (loading) {
+    return <div className="text-purple-300">Loading tasks…</div>;
+  }
+
+  const onDelete = async (taskId) => {
+    try {
+      await firebase.handleDeleteTask(user, projectId, phaseId, taskId);
+      setTasks((prev) => prev.filter((t) => t.id !== taskId));
+    } catch (e) {
+      console.error("error while deleting task : ", e);
     }
-    fetchTask()
-  }, [phaseId, projectId])
+  };
 
-  if(!phaseId && !projectId) return <div>select a phase..</div>
-  
+  const handleToggleTask = async (task) => {
+    try {
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id ? { ...t, completed: !t.completed } : t
+        )
+      );
+
+      await firebase.handleTaskComplete(user, projectId, phaseId, task.id);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to update task status");
+    }
+  };
+
   return (
     <div>
-      {tasks.map((task) => (
-        <div key={task.id}>
-          <h3>{task.taskTitle}</h3>
-          <p>{task.taskDescription}</p>
-          <p>{task.createdBy}</p>
-        </div>
-      ))}
-    </div>
-  )
-}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        {tasks.map((task) => (
+          <div
+            key={task.id}
+            className="bg-purple-900 border border-purple-800 rounded-xl p-4 hover:bg-purple-800 transition relative"
+          >
+            {/* DELETE BUTTON */}
+            <button
+              className="absolute top-2 right-2 text-purple-400 hover:text-red-400"
+              onClick={() => onDelete(task.id)}
+            >
+              ✕
+            </button>
 
-export default TaskArea
+            {/* TITLE */}
+            <h3 className="text-lg font-semibold mb-1">{task.taskTitle}</h3>
+
+            {/* DESCRIPTION */}
+            <p className="text-sm text-purple-300 mb-3">
+              {task.taskDescription}
+            </p>
+
+            {/* META */}
+            <div className="text-xs text-purple-400 flex justify-between items-center">
+              <span>
+                {task.createdBy === "ai" ? "AI Generated" : "User Added"}
+              </span>
+              <span>
+                {task.createdAt?.toDate
+                  ? task.createdAt.toDate().toLocaleDateString()
+                  : ""}
+              </span>
+            </div>
+
+            {/* COMPLETE */}
+            <div className="mt-3 flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => handleToggleTask(task)}
+                className="accent-purple-500 cursor-pointer"
+              />
+
+              <span className="text-sm">
+                {task.completed ? "Completed" : "Mark as complete"}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ADD TASK FORM */}
+      {showAddTask && (
+        <div className="mt-6 animate-fadeIn">
+          <AddNewTask
+            projectId={projectId}
+            phaseId={phaseId}
+            onClose={() => setShowAddTask(false)}
+            onTaskAdded={(task) => setTasks((prev) => [task, ...prev])}
+          />
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <div className="mt-6 flex justify-between items-center text-purple-300">
+        <span>Deadline: — </span>
+        <button
+          className={`px-4 py-2 rounded-lg transition ${
+            showAddTask
+              ? "bg-purple-800 cursor-not-allowed opacity-60"
+              : "bg-purple-700 hover:bg-purple-600"
+          }`}
+          onClick={() => setShowAddTask(true)}
+          disabled={showAddTask}
+        >
+          Add Task
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default TaskArea;

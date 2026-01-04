@@ -1,0 +1,37 @@
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  background: #121212;
+  color: white;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.project-name {
+  margin-bottom: 20px;
+}
+
+.phase-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.phase-tab {
+  padding: 8px 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.phase-tab.active,
+.phase-tab:hover {
+  background: #2a2a2a;
+  color: white;
+}

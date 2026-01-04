@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Home from "./pages/Home";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Signin from "./pages/Signin";
