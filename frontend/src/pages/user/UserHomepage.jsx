@@ -30,6 +30,17 @@ const UserHomepage = () => {
     fetchProjects();
   }, [user]);
 
+  const deleteProject = async (projectId) => {
+    const ok = window.confirm("Are you sure you want to delete this?");
+
+    if (!ok) return;
+
+    setLoading(true)
+    await firebase.handleDeleteProject(user, projectId)
+    setProjects((prev) => prev.filter((t) => t.id !== projectId));
+    setLoading(false)
+  }
+
   if (!user) return <div className="text-white p-6">Not logged in</div>;
   if(loading) return <><Loader/></>
 
@@ -107,17 +118,16 @@ const UserHomepage = () => {
                 projects.map((project) => (
                   <div
                     key={project.id}
-                    onClick={() => navigate(`/projects/${project.id}`)}
                     className="px-5 py-4 border-b border-gray-800 last:border-none
                              cursor-pointer hover:bg-[#222] transition flex justify-between"
                   >
-                    <div>
+                    <div onClick={() => navigate(`/projects/${project.id}`)}>
                       <div className="font-medium">{project.projectName}</div>
                       <div className="text-xs text-gray-400">
                         Click to open project
                       </div>
                     </div>
-                    <div className="text-gray-500">★</div>
+                    <div className="text-red-400 font-bold cursor-pointer"><button onClick={() => deleteProject(project.id)}>Delete</button></div>
                   </div>
                 ))
               )}
