@@ -3,6 +3,8 @@ import axios from "axios";
 import { useFirebase } from "../../context/Firebase";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
+import Loader from "../components/Loader";
+
 const CreateProject = () => {
   const [name, setname] = useState("");
   const [type, setType] = useState("");
@@ -10,9 +12,11 @@ const CreateProject = () => {
   const [level, setLevel] = useState("");
   const [techstack, setTechstack] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false)
+
   const firebase = useFirebase();
   const navigate = useNavigate();
-  const { user, loading, setLoading } = useUser();
+  const { user} = useUser();
 
   const handleSubmit = async () => {
     try {
@@ -30,70 +34,94 @@ const CreateProject = () => {
         user,
         res.data.data
       );
+      setLoading(false);
       navigate(`/projects/${projectId}`);
     } catch (e) {
       console.error("error:", e.response?.data || e.message);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
+  if(loading) return <><Loader/></>
+
   return (
-    <div>
-      <input
-        type="text"
-        value={name}
-        placeholder="enter project name"
-        onChange={(e) => setname(e.target.value)}
-      />
-      <br />
-      <br />
-      <input
-        type="text"
-        value={type}
-        placeholder="enter type eg. web, mobile app, ml model"
-        onChange={(e) => setType(e.target.value)}
-      />
-      <br />
-      <br />
-      <input
-        type="text"
-        value={deadline}
-        placeholder="enter deadline eg. 10 jan 2026"
-        onChange={(e) => setDeadline(e.target.value)}
-      />
-      <br />
-      <br />
-      <input
-        type="text"
-        value={level}
-        placeholder="level eg. beginer, intermidiate"
-        onChange={(e) => setLevel(e.target.value)}
-      />
-      <br />
-      <br />
-      <input
-        type="text"
-        value={techstack}
-        placeholder="tech stack eg. MERN"
-        onChange={(e) => setTechstack(e.target.value)}
-      />
-      <br />
-      <br />
-      <textarea
-        name="description"
-        id="description"
-        value={description}
-        placeholder="description"
-        onChange={(e) => setDescription(e.target.value)}
-      ></textarea>
-      <br />
-      <br />
-      <button onClick={handleSubmit}>
-        {loading ? "Creating..." : "Submit"}
-      </button>
+    <div className="min-h-screen bg-[#0b0f14] flex items-center justify-center px-4">
+      <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#111827]/80 backdrop-blur-xl shadow-xl p-8">
+
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-white">
+            Create New <span className="text-green-400">Project</span>
+          </h1>
+          <h1 className="text-2xl font-bold text-white">
+            Using <span className="text-pink-600">Gemini</span>
+          </h1>
+          <p className="text-sm text-gray-400 mt-1">
+            Define your idea clearly. Garbage input = garbage output.
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="space-y-4">
+          <Input
+            placeholder="Project name"
+            value={name}
+            onChange={setname}
+          />
+
+          <Input
+            placeholder="Type (web, mobile, ML, etc.)"
+            value={type}
+            onChange={setType}
+          />
+
+          <Input
+            placeholder="Deadline (e.g. 10 Jan 2026)"
+            value={deadline}
+            onChange={setDeadline}
+          />
+
+          <Input
+            placeholder="Level (beginner, intermediate, advanced)"
+            value={level}
+            onChange={setLevel}
+          />
+
+          <Input
+            placeholder="Tech stack (e.g. MERN)"
+            value={techstack}
+            onChange={setTechstack}
+          />
+
+          <textarea
+            className="w-full rounded-xl bg-[#0b0f14] border border-white/10 px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition"
+            rows={4}
+            placeholder="Project description (be specific)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        {/* Button */}
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="mt-6 w-full rounded-xl bg-gradient-to-r from-green-500 via-purple-500 to-violet-600 px-4 py-3 text-sm font-semibold text-black hover:opacity-90 disabled:opacity-50 transition"
+        >
+          {loading ? "Creating..." : "Create Project"}
+        </button>
+      </div>
     </div>
   );
 };
+
+const Input = ({ placeholder, value, onChange }) => (
+  <input
+    type="text"
+    value={value}
+    placeholder={placeholder}
+    onChange={(e) => onChange(e.target.value)}
+    className="w-full rounded-xl bg-[#0b0f14] border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-300 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400 transition"
+  />
+);
 
 export default CreateProject;

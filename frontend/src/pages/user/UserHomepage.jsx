@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import { useFirebase } from "../../context/Firebase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const UserHomepage = () => {
   const { user } = useUser();
@@ -18,37 +19,112 @@ const UserHomepage = () => {
       try {
         setLoading(true);
         const res = await firebase.handleViewAllProjects(user);
-        setProjects(res); // res is already an array
-      } catch (err) {
-        console.error("Failed to fetch projects", err);
+        setProjects(res);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProjects();
-  }, [user, firebase]);
+  }, [user]);
 
-  if (!user) return <p>Not logged in</p>;
-  if (loading) return <p>Loading projects...</p>;
+  if (!user) return <div className="text-white p-6">Not logged in</div>;
+  if(loading) return <><Loader/></>
 
   return (
-    <div>
-      <h2>Your Projects</h2>
+    <div className="bg-[#0f0f0f] min-h-screen">
+      <div className="text-4xl font-bold tracking-wide px-10 py-10">
+        <Link to={'/'}>
+        <span className="text-green-400">&lt;Phase</span>
+        <span className="text-white">Wise</span>
+        <span className="text-green-400">/&gt;</span>
+        </Link>
+        
+      </div>
+      <div className=" text-gray-200 px-30 py-10">
+        {/* HEADER */}
+        <div className="mb-10">
+          <h1 className="text-4xl font-semibold text-green-500">
+            Hello, <span className="text-white">{user.email}</span>
+          </h1>
+          <p className="text-gray-400 mt-1">Welcome back to PhaseWise!</p>
+        </div>
 
-      {projects.length === 0 && <p>No projects yet.</p>}
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* LEFT COLUMN */}
+          <div className="lg:col-span-1 space-y-6">
+            <h2 className="text-sm uppercase tracking-wider text-gray-400">
+              Get started
+            </h2>
 
-      <ul>
-        {projects.map((project) => (
-          <li
-            key={project.id}
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/projects/${project.id}`)}
-          >
-            {project.projectName}
-          </li>
-        ))}
-      </ul>
+            {/* CREATE PROJECT */}
+            <div
+              onClick={() => navigate("/create")}
+              className="cursor-pointer bg-purple-900 border border-2 rounded-xl p-5
+                       hover:border-yellow-500 transition"
+            >
+              <h3 className="text-lg font-medium mb-1">Create a new project</h3>
+              <p className="text-sm text-gray-400">
+                Use AI to generate a structured project plan
+              </p>
+            </div>
+
+            {/* OPTIONAL SECOND CARD */}
+            <div className="bg-[#1a1a1a] border border-gray-700 rounded-xl p-5">
+              <h3 className="text-lg font-medium mb-1">
+                Continue where you left off
+              </h3>
+              <p className="text-sm text-gray-400">
+                Open an existing project and resume work
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="lg:col-span-2">
+            {/* SEARCH */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search projects"
+                className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg px-4 py-2
+                         text-sm text-gray-200 focus:outline-none focus:border-yellow-500"
+              />
+            </div>
+
+            {/* PROJECTS LIST */}
+            <div className="bg-[#1a1a1a] border border-gray-700 rounded-xl overflow-hidden">
+              <div className="px-5 py-3 border-b border-gray-700 text-sm text-gray-400">
+                Projects and workspaces
+              </div>
+
+              {projects.length === 0 ? (
+                <div className="p-5 text-gray-400">No projects yet.</div>
+              ) : (
+                projects.map((project) => (
+                  <div
+                    key={project.id}
+                    onClick={() => navigate(`/projects/${project.id}`)}
+                    className="px-5 py-4 border-b border-gray-800 last:border-none
+                             cursor-pointer hover:bg-[#222] transition flex justify-between"
+                  >
+                    <div>
+                      <div className="font-medium">{project.projectName}</div>
+                      <div className="text-xs text-gray-400">
+                        Click to open project
+                      </div>
+                    </div>
+                    <div className="text-gray-500">★</div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import TaskArea from "../components/TaskArea";
 import { useUser } from "../../context/UserContext";
 import { useFirebase } from "../../context/Firebase";
 import { useParams } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const ProjectDashboard = () => {
   const { user } = useUser();
@@ -28,16 +29,17 @@ const ProjectDashboard = () => {
     loadData();
   }, [user, projectId]);
 
-  if (!project) return <div className="text-white p-6">Loading…</div>;
+  if (!project) return <><Loader/></>
 
   return (
-    <div className="flex h-screen bg-purple-950 text-purple-100">
+    <div className="flex h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-slate-100">
       <Sidebar />
 
-      <main className="flex-1 p-6 overflow-y-auto">
-        <h1 className="text-3xl font-bold mb-6">
-          {project.projectName}
-        </h1>
+      <main className={`flex-1 p-8 overflow-y-auto transition-all duration-300`}>
+        
+          <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
+            {project.projectName}
+          </h1>
 
         {/* PHASE CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

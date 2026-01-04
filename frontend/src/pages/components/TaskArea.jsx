@@ -55,15 +55,44 @@ const TaskArea = ({ projectId, phaseId }) => {
 
   return (
     <div>
+      
+      {/* FOOTER */}
+      <div className="mt-6 flex justify-between items-center text-purple-100 font-bold">
+        <span>Deadline: — </span>
+        <button
+          className={`px-4 py-2 rounded-lg transition ${
+            showAddTask
+              ? "bg-purple-800 cursor-not-allowed opacity-60"
+              : "bg-purple-700 hover:bg-purple-600"
+          }`}
+          onClick={() => setShowAddTask(true)}
+          disabled={showAddTask}
+        >
+          Add Task
+        </button>
+      </div>
+      <br />
+       {/* ADD TASK FORM */}
+      {showAddTask && (
+        <div className="mt-6 animate-fadeIn">
+          <AddNewTask
+            projectId={projectId}
+            phaseId={phaseId}
+            onClose={() => setShowAddTask(false)}
+            onTaskAdded={(task) => setTasks((prev) => [task, ...prev])}
+          />
+        </div>
+      )}
+      <br />
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="bg-purple-900 border border-purple-800 rounded-xl p-4 hover:bg-purple-800 transition relative"
+            className="bg- border rounded-xl p-4 hover:bg-purple-800 transition relative"
           >
             {/* DELETE BUTTON */}
             <button
-              className="absolute top-2 right-2 text-purple-400 hover:text-red-400"
+              className="absolute top-2 right-2 font-bold border px-2 py-1 rounded-2xl bg-fuchsia-950 hover:text-red-400"
               onClick={() => onDelete(task.id)}
             >
               ✕
@@ -79,7 +108,7 @@ const TaskArea = ({ projectId, phaseId }) => {
 
             {/* META */}
             <div className="text-xs text-purple-400 flex justify-between items-center">
-              <span>
+              <span className="text-blue-200 font-bold">
                 {task.createdBy === "ai" ? "AI Generated" : "User Added"}
               </span>
               <span>
@@ -106,33 +135,7 @@ const TaskArea = ({ projectId, phaseId }) => {
         ))}
       </div>
 
-      {/* ADD TASK FORM */}
-      {showAddTask && (
-        <div className="mt-6 animate-fadeIn">
-          <AddNewTask
-            projectId={projectId}
-            phaseId={phaseId}
-            onClose={() => setShowAddTask(false)}
-            onTaskAdded={(task) => setTasks((prev) => [task, ...prev])}
-          />
-        </div>
-      )}
-
-      {/* FOOTER */}
-      <div className="mt-6 flex justify-between items-center text-purple-300">
-        <span>Deadline: — </span>
-        <button
-          className={`px-4 py-2 rounded-lg transition ${
-            showAddTask
-              ? "bg-purple-800 cursor-not-allowed opacity-60"
-              : "bg-purple-700 hover:bg-purple-600"
-          }`}
-          onClick={() => setShowAddTask(true)}
-          disabled={showAddTask}
-        >
-          Add Task
-        </button>
-      </div>
+     
     </div>
   );
 };

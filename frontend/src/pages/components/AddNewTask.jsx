@@ -46,7 +46,7 @@ const AddNewTask = ({ projectId, phaseId, onClose, onTaskAdded }) => {
   };
 
   return (
-    <div className="bg-purple-900 border border-purple-800 rounded-xl p-5 shadow-lg
+    <div className=" border border-purple-100 rounded-xl p-5 shadow-lg
                     transform transition-all duration-300 scale-100 opacity-100">
       <h3 className="text-lg font-semibold mb-4">Add New Task</h3>
 
@@ -56,7 +56,7 @@ const AddNewTask = ({ projectId, phaseId, onClose, onTaskAdded }) => {
         value={taskTitle}
         onChange={(e) => setTaskTitle(e.target.value)}
         className="w-full mb-3 px-3 py-2 rounded bg-purple-950 border border-purple-800
-                   text-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                   text-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600"
       />
 
       <textarea

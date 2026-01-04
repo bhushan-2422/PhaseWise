@@ -26,13 +26,13 @@ const Home = () => {
       {/* Navigation */}
       <nav className="navbar">
         <div className="container nav-container">
-          <div className="logo">
-            <div className="logo-icon">
-              <i className="fas fa-project-diagram" />
-            </div>
-            <span className="logo-text">
-              Project<span className="gradient-text">Flow</span>
-            </span>
+          <div className="text-3xl font-bold tracking-wide">
+                  <Link to={'/'}>
+                  <span className="text-green-400">&lt;Phase</span>
+                  <span className="text-white">Wise</span>
+                  <span className="text-green-400">/&gt;</span>
+                  </Link>
+                  
           </div>
           <div className="nav-menu">
             <a href="#home" className="nav-link">
@@ -91,10 +91,12 @@ const Home = () => {
               phase with intelligent guidance.
             </p>
             <div className="hero-cta">
+              <Link to={user?'/userhome' : '/signin'}>
               <button className="btn btn-primary btn-lg" id="getStartedBtn">
                 <i className="fas fa-rocket" />
                 Get Started Free
               </button>
+              </Link>
               <button className="btn btn-outline btn-lg" id="demoBtn">
                 <i className="fas fa-play-circle" />
                 Watch Demo
