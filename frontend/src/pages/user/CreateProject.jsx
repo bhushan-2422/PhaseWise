@@ -38,6 +38,7 @@ const CreateProject = () => {
       navigate(`/projects/${projectId}`);
     } catch (e) {
       console.error("error:", e.response?.data || e.message);
+      setLoading(false);
     } 
   };
 
