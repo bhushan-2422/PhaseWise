@@ -21,7 +21,7 @@ const CreateProject = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const res = await axios.post("/api/v1/user/gemini", {
+      const res = await axios.post("https://phasewise.onrender.com/api/v1/user/gemini", {
         name,
         type,
         deadline,
