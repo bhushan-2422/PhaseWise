@@ -62,7 +62,7 @@ const Home = () => {
 
             {user && (
               <>
-                <Link to="/userhome">Go to Dashboard</Link>
+                <Link to="/userhome" className="text-green-400 font-bold shadow hover:bg-purple-700 shadow-emerald-300">Go to Dashboard</Link>
                 <br />
                 <button onClick={signoutUser}>Logout</button>
               </>
@@ -82,8 +82,8 @@ const Home = () => {
               <span>AI-Powered Project Planning</span>
             </div>
             <h1 className="hero-title">
-              Build <span className="gradient-text">Smarter</span> Projects with
-              AI
+              Build projects <span className="gradient-text">Smartly</span> with
+              the power of <span className="text-red-400">AI</span>
             </h1>
             <p className="hero-subtitle">
               Transform your ideas into structured project plans. Let AI
@@ -194,8 +194,7 @@ const Home = () => {
       {/* Features Section */}
       <section className="features" id="features">
         <div className="container">
-          <div className="section-header">
-            <span className="section-subtitle">Why Choose Us</span>
+          <div className="section-header flex justify-center">
             <h2 className="section-title">
               Smart Features for{" "}
               <span className="gradient-text">Smart Projects</span>
